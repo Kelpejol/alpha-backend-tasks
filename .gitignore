@@ -28,6 +28,7 @@ python-service/.coverage
 node_modules/
 ts-service/node_modules/
 ts-service/dist/
+ts-service/.env
 ts-service/coverage/
 *.tsbuildinfo
 

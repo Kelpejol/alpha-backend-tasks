@@ -3,11 +3,15 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { AuthModule } from './auth/auth.module';
+import { CandidatesModule } from './candidates/candidates.module';
 import { defaultDatabaseUrl, getTypeOrmOptions } from './config/typeorm.options';
+import { DocumentsModule } from './documents/documents.module';
 import { HealthModule } from './health/health.module';
 import { LlmModule } from './llm/llm.module';
 import { QueueModule } from './queue/queue.module';
 import { SampleModule } from './sample/sample.module';
+import { SummariesModule } from './summaries/summaries.module';
+import { WorkersModule } from './workers/workers.module';
 
 @Module({
   imports: [
@@ -19,8 +23,12 @@ import { SampleModule } from './sample/sample.module';
     }),
     AuthModule,
     HealthModule,
+    CandidatesModule,
+    DocumentsModule,
+    SummariesModule,
     QueueModule,
     LlmModule,
+    WorkersModule,
     SampleModule,
   ],
 })

@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <header>
+    <h1>{{ report.title }}</h1>
+    <p class="muted"><strong>Company:</strong> {{ report.companyName }} | <strong>Ticker:</strong> {{ report.ticker }}</p>
+    <p class="muted"><strong>Sector:</strong> {{ report.sector }} | <strong>Analyst:</strong> {{ report.analystName }}</p>
+  </header>
+
+  <section aria-labelledby="executive-summary">
+    <h2 id="executive-summary">Executive Summary</h2>
+    <p>{{ report.executiveSummary }}</p>
+  </section>
+
+  <section aria-labelledby="key-points">
+    <h2 id="key-points">Key Points</h2>
+    <ul>
+      {% for point in report.keyPoints %}
+        <li>{{ point }}</li>
+      {% endfor %}
+    </ul>
+  </section>
+
+  <section aria-labelledby="risks">
+    <h2 id="risks">Risks</h2>
+    <ul>
+      {% for risk in report.risks %}
+        <li>{{ risk }}</li>
+      {% endfor %}
+    </ul>
+  </section>
+
+  <section aria-labelledby="recommendation">
+    <h2 id="recommendation">Recommendation</h2>
+    <p>{{ report.recommendation }}</p>
+  </section>
+
+  <section aria-labelledby="metrics">
+    <h2 id="metrics">Metrics</h2>
+    {% if report.metrics %}
+      <table>
+        <thead>
+          <tr>
+            <th scope="col">Metric</th>
+            <th scope="col">Value</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for metric in report.metrics %}
+            <tr>
+              <td>{{ metric.name }}</td>
+              <td>{{ metric.value }}</td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    {% else %}
+      <p class="muted">No metrics were provided for this briefing.</p>
+    {% endif %}
+  </section>
+{% endblock %}

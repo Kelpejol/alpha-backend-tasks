@@ -6,25 +6,61 @@
     <title>{{ title }}</title>
     <style>
       body {
-        font-family: Arial, sans-serif;
-        margin: 2rem;
+        font-family: "Segoe UI", Tahoma, sans-serif;
+        margin: 0;
+        background: #f4f6f8;
         color: #1f2937;
       }
-      main {
-        max-width: 800px;
+      .page {
+        max-width: 920px;
+        margin: 2rem auto;
+        background: #fff;
+        border: 1px solid #e5e7eb;
+        border-radius: 12px;
+        padding: 2rem;
+        box-shadow: 0 8px 20px rgba(31, 41, 55, 0.06);
       }
-      footer {
-        margin-top: 2rem;
-        font-size: 0.875rem;
+      h1,
+      h2,
+      h3 {
+        margin: 0 0 0.75rem;
+      }
+      p {
+        margin: 0 0 1rem;
+        line-height: 1.5;
+      }
+      ul {
+        margin: 0.25rem 0 1.25rem;
+      }
+      .muted {
         color: #6b7280;
+      }
+      .meta {
+        margin-top: 2rem;
+        padding-top: 1rem;
+        border-top: 1px solid #e5e7eb;
+        font-size: 0.9rem;
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 0.5rem;
+      }
+      th,
+      td {
+        border: 1px solid #d1d5db;
+        padding: 0.5rem;
+        text-align: left;
+      }
+      th {
+        background: #f3f4f6;
       }
     </style>
   </head>
   <body>
-    <main>
-      <h1>{{ title }}</h1>
-      <div>{{ body }}</div>
+    <main class="page">
+      {% block content %}{% endblock %}
+      <footer class="meta muted">Generated at: {{ generated_at }}</footer>
     </main>
-    <footer>Generated at: {{ generated_at }}</footer>
   </body>
 </html>
