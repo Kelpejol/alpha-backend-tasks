@@ -82,7 +82,7 @@ flowchart TD
 	E --> F[(PostgreSQL)]
 	D --> G[Report Formatter\nview model + timestamp]
 	G --> H[Jinja2 Templates\nbase.html + briefing_report.html]
-	H --> I[HTML Response\n/briefings/{id}/html]
+	H --> I[HTML Response\n/briefings/&#123;id&#125;/html]
 ```
 
 ## 5. Python Service API Endpoints
