@@ -1,34 +1,37 @@
 import { TypeOrmModuleOptions } from '@nestjs/typeorm';
 import { DataSourceOptions } from 'typeorm';
 
-import { CandidateDocument } from '../entities/candidate-document.entity';
-import { CandidateSummary } from '../entities/candidate-summary.entity';
-import { Candidate } from '../entities/candidate.entity';
-import { SampleCandidate } from '../entities/sample-candidate.entity';
-import { SampleWorkspace } from '../entities/sample-workspace.entity';
-import { InitialStarterEntities1710000000000 } from '../migrations/1710000000000-InitialStarterEntities';
-import { CandidateWorkflowEntities1720000000000 } from '../migrations/1720000000000-CandidateWorkflowEntities';
+import { ProfileAttachment } from '../entities/profile-attachment.entity';
+import { TalentAssessment } from './../entities/talent-assessment.entity';
+import { TalentProfile } from '../entities/talent-profile.entity';
+import { TalentIntelligenceSchema1740000000000 } from '../migrations/1740000000000-TalentIntelligenceSchema';
 
+/**
+ * Default connection string for the PostgreSQL database.
+ */
 export const defaultDatabaseUrl =
   'postgres://assessment_user:assessment_pass@localhost:5432/assessment_db';
 
+/**
+ * Generates the TypeORM configuration options for the application.
+ * 
+ * @param databaseUrl - The PostgreSQL connection string.
+ * @returns A combined TypeOrmModuleOptions and DataSourceOptions object.
+ */
 export const getTypeOrmOptions = (
   databaseUrl: string,
 ): TypeOrmModuleOptions & DataSourceOptions => ({
   type: 'postgres',
   url: databaseUrl,
   entities: [
-    SampleWorkspace,
-    SampleCandidate,
-    Candidate,
-    CandidateDocument,
-    CandidateSummary,
+    TalentProfile,
+    ProfileAttachment,
+    TalentAssessment,
   ],
   migrations: [
-    InitialStarterEntities1710000000000,
-    CandidateWorkflowEntities1720000000000,
+    TalentIntelligenceSchema1740000000000,
   ],
-  migrationsTableName: 'typeorm_migrations',
+  migrationsTableName: 'talent_intelligence_migrations',
   synchronize: false,
   logging: false,
 });
