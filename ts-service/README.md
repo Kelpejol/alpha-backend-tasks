@@ -1,83 +1,109 @@
-# TalentFlow TypeScript Service Starter
+# Talent Intelligence Service (TIS)
 
-NestJS starter service for the backend assessment.
+The **Talent Intelligence Service (TIS)** is a production-grade NestJS backend designed to orchestrate the lifecycle of professional talent evaluation through advanced intelligence engines. It provides a secure, multi-tenant environment for registering talent profiles, managing strategic attachments, and generating high-fidelity intelligence assessments.
 
-This service includes:
+## Core Capabilities
 
-- Nest bootstrap with global validation
-- TypeORM + migration setup
-- Fake auth context (`x-user-id`, `x-workspace-id`)
-- Tiny workspace-scoped sample module
-- Queue abstraction module
-- LLM provider abstraction with a fake summarization provider
-- Jest test setup
+-   **Multi-Tenant Isolation**: Built from the ground up with organizational boundaries, ensuring strict data segregation across all entities.
+-   **Intelligence Orchestration**: Asynchronous evaluation pipeline that leverages Vertex AI (Gemini) or simulated intelligence engines.
+-   **Secure Attachments**: Professional management of talent-related documents and extracted content blobs.
+-   **Standardized Error Handling**: A global `ApiExceptionFilter` ensures consistent, human-readable, and professional error reporting.
+-   **Validated Data Contracts**: Hardened DTOs using `class-validator` for guaranteed data integrity.
+-   **Resilient Background Processing**: Persistent queue-driven worker architecture for high-performance assessment generation.
 
-The assessment-specific candidate document and summary workflow is intentionally not implemented.
+---
 
-## Prerequisites
+## Technical Architecture
 
-- Node.js 22+
-- npm
-- PostgreSQL running from repository root:
+The service follows a modular, repository-pattern architecture designed for scalability and maintainability.
 
-```bash
-docker compose up -d postgres
+```mermaid
+graph TD
+    Client[API Client] --> API[Talent Intelligence API]
+    API --> Auth[Fake Auth Guard]
+    Auth --> OrgMod[Organizations Module]
+    Auth --> ProfMod[Profiles Module]
+    ProfMod --> AttMod[Attachments Module]
+    ProfMod --> AssMod[Assessments Module]
+    AssMod --> Queue[Persistent Queue]
+    Queue --> Worker[Intelligence Worker]
+    Worker --> Engine[Vertex AI / Mock Engine]
+    Engine --> DB[(PostgreSQL)]
+    AssMod --> DB
+    AttMod --> DB
+    ProfMod --> DB
 ```
 
-## Setup
+---
+
+## Getting Started
+
+### Prerequisites
+
+-   **Node.js**: Version 22 or higher.
+-   **NPM**: Version 10 or higher.
+-   **Database**: PostgreSQL 15+ (can be started via the root `docker-compose.yml`).
+
+### Installation
+
+1.  **Install Dependencies**:
+    ```bash
+    npm install
+    ```
+
+2.  **Configure Environment**:
+    ```bash
+    cp .env.example .env
+    ```
+    *Ensure `DATABASE_URL` is correctly configured.*
+
+3.  **Run Migrations**:
+    ```bash
+    npm run migration:run
+    ```
+
+4.  **Start the Service**:
+    ```bash
+    npm run start:dev
+    ```
+
+---
+
+## API Interaction
+
+### Security Headers
+
+All requests must include professional identity headers for multi-tenant isolation:
+
+-   `x-user-id`: Unique identifier for the authenticated user (e.g., `admin-01`).
+-   `x-workspace-id`: The corporate organization identifier (e.g., `org-acme-corp`).
+
+### Primary Endpoints
+
+| Resource | Method | Path | Description |
+| :--- | :--- | :--- | :--- |
+| **Profiles** | `POST` | `/profiles` | Register a new professional talent profile. |
+| **Profiles** | `GET` | `/profiles` | List all talent profiles in the organization. |
+| **Attachments** | `POST` | `/profiles/:id/attachments` | Link a document/blob to a talent profile. |
+| **Assessments** | `POST` | `/profiles/:id/assessments/trigger` | Initiate an asynchronous intelligence evaluation. |
+| **Assessments** | `GET` | `/profiles/:id/assessments` | List all assessments for a specific profile. |
+
+---
+
+## Reliability & Testing
+
+The system maintains a comprehensive test suite to ensure architectural integrity.
 
 ```bash
-cd ts-service
-npm install
-cp .env.example .env
-```
-
-## Environment
-
-- `PORT`
-- `DATABASE_URL`
-- `NODE_ENV`
-- `GEMINI_API_KEY` (leave blank unless implementing a real provider)
-
-Do not commit API keys or secrets.
-
-Candidates may create a free Gemini API key through Google AI Studio for the full assessment implementation.
-
-## Run Migrations
-
-```bash
-cd ts-service
-npm run migration:run
-```
-
-## Run Service
-
-```bash
-cd ts-service
-npm run start:dev
-```
-
-## Run Tests
-
-```bash
-cd ts-service
+# Run Unit Tests
 npm test
+
+# Run End-to-End Tests
 npm run test:e2e
 ```
 
-## Fake Auth Headers
+---
 
-Sample endpoints in this starter are protected by a fake local auth guard.
-Include these headers in requests:
+## License
 
-- `x-user-id`: any non-empty string (example: `user-1`)
-- `x-workspace-id`: workspace identifier used for scoping (example: `workspace-1`)
-
-## Layout Highlights
-
-- `src/auth/`: fake auth guard, user decorator, auth types
-- `src/entities/`: starter entities
-- `src/sample/`: tiny example module (controller/service/dto)
-- `src/queue/`: in-memory queue abstraction
-- `src/llm/`: provider interface + fake provider
-- `src/migrations/`: TypeORM migration files
+Copyright © 2026 TalentFlow Intelligence. All rights reserved.
