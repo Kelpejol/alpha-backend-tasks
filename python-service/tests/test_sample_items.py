@@ -9,7 +9,7 @@ from sqlalchemy.pool import StaticPool
 from app.db.base import Base
 from app.db.session import get_db
 from app.main import app
-from app.models import SampleItem  # noqa: F401
+from app.models import PlatformItem  # noqa: F401
 
 
 @pytest.fixture()
@@ -19,7 +19,7 @@ def client() -> Generator[TestClient, None, None]:
         connect_args={"check_same_thread": False},
         poolclass=StaticPool,
     )
-    testing_session_local = sessionmaker(bind=engine, autoflush=False, autocommit=False, future=True)
+    testing_session_local = sessionmaker(bind=engine, autoflush=False, autocommit=False)
 
     Base.metadata.create_all(bind=engine)
 
@@ -39,7 +39,7 @@ def client() -> Generator[TestClient, None, None]:
     Base.metadata.drop_all(bind=engine)
 
 
-def test_create_and_list_sample_items(client: TestClient) -> None:
+def test_create_and_list_platform_items(client: TestClient) -> None:
     create_response = client.post(
         "/sample-items",
         json={"name": "Starter Item", "description": "Used for starter validation"},

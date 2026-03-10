@@ -9,7 +9,7 @@ from sqlalchemy.pool import StaticPool
 from app.db.base import Base
 from app.db.session import get_db
 from app.main import app
-from app.models import Briefing  # noqa: F401
+from app.models import BriefingReport  # noqa: F401
 
 
 @pytest.fixture()
@@ -19,7 +19,7 @@ def client() -> Generator[TestClient, None, None]:
         connect_args={"check_same_thread": False},
         poolclass=StaticPool,
     )
-    testing_session_local = sessionmaker(bind=engine, autoflush=False, autocommit=False, future=True)
+    testing_session_local = sessionmaker(bind=engine, autoflush=False, autocommit=False)
 
     Base.metadata.create_all(bind=engine)
 
@@ -86,6 +86,9 @@ def test_create_briefing_validation_rules(client: TestClient) -> None:
 
     response = client.post("/briefings", json=payload)
     assert response.status_code == 422
+    data = response.json()
+    assert data["error"] == "VALIDATION_FAILED"
+    assert "keyPoints" in str(data["details"])
 
 
 def test_unique_metric_names_validation(client: TestClient) -> None:
@@ -108,7 +111,7 @@ def test_generate_and_render_html(client: TestClient) -> None:
 
     report = generate_response.json()
     assert report["briefingId"] == briefing_id
-    assert report["title"] == "Acme Holdings (ACM) Briefing"
+    assert report["title"] == "Acme Holdings (ACM) Analytical Briefing"
     assert report["sector"] == "Industrial Technology"
     assert report["analystName"] == "Jane Doe"
     assert "generatedAt" in report
@@ -121,7 +124,7 @@ def test_generate_and_render_html(client: TestClient) -> None:
     assert html_response.status_code == 200
     assert "text/html" in html_response.headers["content-type"]
     assert "Executive Summary" in html_response.text
-    assert "Acme Holdings (ACM) Briefing" in html_response.text
+    assert "Acme Holdings (ACM) Analytical Briefing" in html_response.text
     assert "Industrial Technology" in html_response.text
     assert "Jane Doe" in html_response.text
 
@@ -129,4 +132,6 @@ def test_generate_and_render_html(client: TestClient) -> None:
 def test_briefing_not_found(client: TestClient) -> None:
     response = client.get("/briefings/999")
     assert response.status_code == 404
-    assert response.json()["detail"] == "Briefing not found"
+    data = response.json()
+    assert data["error"] == "RESOURCE_NOT_FOUND"
+    assert "not found" in data["message"].lower()
