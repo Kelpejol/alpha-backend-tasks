@@ -1,18 +1,34 @@
+"""
+Data schemas for platform organizational items.
+
+This module defines the Pydantic models used for validating input 
+and structuring output for general platform items.
+"""
+
 from datetime import datetime
 from typing import Optional
 
 from pydantic import BaseModel, ConfigDict, Field
+from pydantic.alias_generators import to_camel
 
 
-class SampleItemCreate(BaseModel):
-    name: str = Field(min_length=1, max_length=120)
+class PlatformItemCreate(BaseModel):
+    """Schema for creating a new platform item."""
+    model_config = ConfigDict(alias_generator=to_camel, populate_by_name=True)
+
+    label: str = Field(..., min_length=1, max_length=120, alias="name")
     description: Optional[str] = Field(default=None, max_length=500)
 
 
-class SampleItemRead(BaseModel):
-    model_config = ConfigDict(from_attributes=True)
+class PlatformItemRead(BaseModel):
+    """Schema for reading platform item data."""
+    model_config = ConfigDict(
+        from_attributes=True, 
+        alias_generator=to_camel, 
+        populate_by_name=True
+    )
 
     id: int
-    name: str
-    description: Optional[str]
-    created_at: datetime
+    item_label: str = Field(..., alias="name")
+    item_description: Optional[str] = Field(default=None, alias="description")
+    record_created_at: datetime = Field(..., alias="createdAt")
